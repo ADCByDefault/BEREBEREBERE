@@ -1,0 +1,52 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "mapDesign.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "block.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "brick.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "mapDesign.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 133,
+                "y": 149
+            }
+        }
+    },
+    "last.exportedFilePath": "C:/Users/Swara/Desktop/BEREBEREBERE/tiledStyles",
+    "last.imagePath": "C:/Users/Swara/Desktop/BEREBEREBERE/tiledStyles/imgs",
+    "map.height": 30,
+    "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "openFiles": [
+        "mapDesign.tmx",
+        "brick.tsx",
+        "block.tsx"
+    ],
+    "project": "mapDesign.tiled-project",
+    "recentFiles": [
+        "block.tsx",
+        "brick.tsx",
+        "mapDesign.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
