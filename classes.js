@@ -34,7 +34,6 @@ class Ball {
     static speed = 3;
     static size = 5;
     static startingAngle = 45;
-    static refractionAngle = 90;
     static randomizzation = 2;
     constructor({ startingPosition, ctx }) {
         this.pos = startingPosition;
@@ -55,22 +54,7 @@ class Ball {
         this.pos.x += Ball.speed * Math.cos((this.angle * Math.PI) / 180);
         this.pos.y -= Ball.speed * Math.sin((this.angle * Math.PI) / 180);
     }
-    collide() {
-        console.log("%c\tentrante", "color: red");
-        console.log(this);
-        debugger;
-        this.angle = Math.floor(
-            this.angle +
-                Ball.refractionAngle +
-                Math.random() * Ball.randomizzation
-        );
-        if (this.angle >= 360) {
-            this.angle -= 360;
-        }
-        console.log("%c\tusciente", "color:blue");
-        console.log(this);
-        debugger;
-    }
+    collide() {}
 }
 
 class Plate {
