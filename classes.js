@@ -54,7 +54,25 @@ class Ball {
         this.pos.x += Ball.speed * Math.cos((this.angle * Math.PI) / 180);
         this.pos.y -= Ball.speed * Math.sin((this.angle * Math.PI) / 180);
     }
-    collide() {}
+    collide(where) {
+        switch (where) {
+            case "top":
+                this.angle = 360 - this.angle;
+                break;
+            case "bottom":
+                this.angle = 360 - this.angle;
+                break;
+            case "left":
+                this.angle = 360 - this.angle + 180;
+                break;
+            case "right":
+                this.angle = 360 - this.angle + 180;
+                break;
+        }
+        if (this.angle >= 360) {
+            this.angle -= 360;
+        }
+    }
 }
 
 class Plate {

@@ -54,21 +54,81 @@ const plate = new Plate({
 });
 
 const ball = new Ball({ startingPosition: { x: 100, y: 270 }, ctx: ctx });
+let framereq = null;
 function animate() {
-    window.requestAnimationFrame(animate);
+    framereq = window.requestAnimationFrame(animate);
     drawEveryThing();
     detectCollisions();
     move();
 }
 
 function detectCollisions() {
+    detectCollisioneOuterBox();
+    detectPlateCollision();
+    detectBrickCollision();
+}
+
+function detectBrickCollision() {
+    let ballx =
+        ball.pos.x +
+        Ball.speed * Math.cos(((this.angle - 180) * Math.PI) / 180);
+    let bally =
+        ball.pos.y -
+        Ball.speed * Math.sin(((this.angle - 180) * Math.PI) / 180);
+    bricks.forEach((r, i) => {
+        r.forEach((b, j) => {
+            // if (
+            //     ball.pos.x - Ball.size < b.x + brickSize &&
+            //     ball.pos.y + Ball.size > b.y &&
+            //     ball.pos.x + Ball.size > b.x &&
+            //     ball.pos.y - Ball.size < b.y + brickSize
+            // ) {
+            //     ball.collide("bottom");
+            //     bricks[i].splice(j, 1);
+            // }
+
+            
+        });
+    });
+}
+
+function isBrickCollide(b) {
     if (
-        ball.pos.x + Ball.size > canvas.width ||
-        ball.pos.y + Ball.size > canvas.height ||
-        ball.pos.x - Ball.size < 0 ||
-        ball.pos.y - Ball.size < 0
+        ball.pos.x + Ball.size > b.x &&
+        ball.pos.x - Ball.size < b.x + brickSize &&
+        ball.pos.y - Ball.size < b.y + brickSize &&
+        ball.pos.y + Ball.size < b.y
     ) {
-        ball.collide();
+        return true;
+    }
+    return false;
+}
+
+function detectPlateCollision() {
+    if (
+        ball.pos.x - Ball.size < plate.pos.x + Plate.size.x &&
+        ball.pos.y + Ball.size > plate.pos.y &&
+        ball.pos.x + Ball.size > plate.pos.x &&
+        ball.pos.y - Ball.size < plate.pos.y + Plate.size.y
+    ) {
+        ball.collide("bottom");
+    }
+}
+
+function detectCollisioneOuterBox() {
+    if (ball.pos.y - Ball.size < 0) {
+        ball.collide("top");
+    }
+    if (ball.pos.x + Ball.size > canvas.width) {
+        ball.collide("right");
+    }
+    if (ball.pos.x - Ball.size < 0) {
+        ball.collide("left");
+    }
+    if (ball.pos.y - Ball.size > canvas.height) {
+        window.cancelAnimationFrame(framereq);
+        alert("Game Over");
+        location.reload();
     }
 }
 
