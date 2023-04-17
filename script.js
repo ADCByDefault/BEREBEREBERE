@@ -48,6 +48,9 @@ const keys = {
     right: false,
 };
 
+/**
+ * @type {Plate} plate
+ */
 const plate = new Plate({
     startingPosition: { x: gap, y: canvas.height - Plate.size.y - gap },
     ctx,
@@ -66,53 +69,125 @@ function detectCollisions() {
     detectCollisioneOuterBox();
     detectPlateCollision();
     detectBrickCollision();
+    detectBlockCollision();
 }
 
 function detectBrickCollision() {
-    let ballx =
-        ball.pos.x +
-        Ball.speed * Math.cos(((this.angle - 180) * Math.PI) / 180);
-    let bally =
-        ball.pos.y -
-        Ball.speed * Math.sin(((this.angle - 180) * Math.PI) / 180);
     bricks.forEach((r, i) => {
         r.forEach((b, j) => {
-            // if (
-            //     ball.pos.x - Ball.size < b.x + brickSize &&
-            //     ball.pos.y + Ball.size > b.y &&
-            //     ball.pos.x + Ball.size > b.x &&
-            //     ball.pos.y - Ball.size < b.y + brickSize
-            // ) {
-            //     ball.collide("bottom");
-            //     bricks[i].splice(j, 1);
-            // }
-
-            
+            let c = isCollide(b);
+            if (c) {
+                ball.collide(b.lastDir);
+                bricks[i].splice(j, 1);
+                return;
+            }
         });
     });
 }
 
-function isBrickCollide(b) {
-    if (
-        ball.pos.x + Ball.size > b.x &&
-        ball.pos.x - Ball.size < b.x + brickSize &&
-        ball.pos.y - Ball.size < b.y + brickSize &&
-        ball.pos.y + Ball.size < b.y
-    ) {
+function detectBlockCollision() {
+    blocks.forEach((r, i) => {
+        r.forEach((b, j) => {
+            let c = isCollide(b);
+            if (c) {
+                let ballb = ball;
+                // debugger;
+                ball.collide(b.lastDir);
+                // debugger;
+                return;
+            }
+        });
+    });
+}
+
+/**
+ *
+ * @param {Brick} b
+ * @returns
+ */
+function isCollide(b) {
+    let x = clamp(b.x + 3, b.x + b.size + 3, ball.pos.x);
+    let y = clamp(b.y + 3, b.y + b.size + 3, ball.pos.y);
+    let dis = Math.sqrt(
+        Math.pow(x - ball.pos.x, 2) + Math.pow(y - ball.pos.y, 2)
+    );
+    if (dis <= ball.size) {
         return true;
+    } else {
+        let dir = getSingleCollisionDirection(x, y, ball.pos.x, ball.pos.y);
+
+        b.setLastDir(dir);
     }
     return false;
 }
 
 function detectPlateCollision() {
-    if (
-        ball.pos.x - Ball.size < plate.pos.x + Plate.size.x &&
-        ball.pos.y + Ball.size > plate.pos.y &&
-        ball.pos.x + Ball.size > plate.pos.x &&
-        ball.pos.y - Ball.size < plate.pos.y + Plate.size.y
-    ) {
-        ball.collide("bottom");
+    let x = clamp(plate.pos.x, plate.pos.x + plate.size.x, ball.pos.x);
+    let y = clamp(plate.pos.y, plate.pos.y + plate.size.y, ball.pos.y);
+    let dis = Math.sqrt(
+        Math.pow(x - ball.pos.x, 2) + Math.pow(y - ball.pos.y, 2)
+    );
+    if (dis <= ball.size) {
+        ball.collide(plate.lastDir);
+    } else {
+        let dir = getCollisionDirection(x, y, ball.pos.x, ball.pos.y);
+        plate.setLastDir(dir);
     }
+}
+
+function getCollisionDirection(x1, y1, x2, y2) {
+    let where = "";
+    if (x1 < x2) {
+        where += "right,";
+    }
+    if (x1 > x2) {
+        where += "left,";
+    }
+    if (y1 > y2) {
+        where += "bottom,";
+    }
+    if (y1 < y2) {
+        where += "top,";
+    }
+    return where;
+}
+
+function getSingleCollisionDirection(x1, y1, x2, y2) {
+    let where = "";
+    if (x1 < x2) {
+        where = "right";
+    }
+    if (x1 > x2) {
+        where = "left";
+    }
+    if (y1 > y2) {
+        where = "bottom";
+    }
+    if (y1 < y2) {
+        where = "top";
+    }
+    return where;
+}
+
+function clamp(min, max, value) {
+    if (min > value) {
+        return min;
+    }
+    if (max < value) {
+        return max;
+    }
+    return value;
+}
+
+function drawLine(x1, y1, x2, y2) {
+    ctx.save();
+    ctx.strokeStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.closePath();
+    ctx.restore();
 }
 
 function detectCollisioneOuterBox() {
@@ -126,9 +201,10 @@ function detectCollisioneOuterBox() {
         ball.collide("left");
     }
     if (ball.pos.y - Ball.size > canvas.height) {
-        window.cancelAnimationFrame(framereq);
-        alert("Game Over");
-        location.reload();
+        ball.collide("bottom");
+        // window.cancelAnimationFrame(framereq);
+        // alert("Game Over");
+        // location.reload();
     }
 }
 

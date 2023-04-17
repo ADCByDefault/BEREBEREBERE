@@ -5,11 +5,16 @@ class Block {
         this.y = y;
         /**@type {CanvasRenderingContext2D} */
         this.ctx = ctx;
+        this.size = Block.size;
+        this.lastDir = "";
+    }
+    setLastDir(dir) {
+        this.lastDir = dir;
     }
     draw() {
         this.ctx.save;
         this.ctx.fillStyle = "red";
-        this.ctx.fillRect(this.x, this.y, Block.size, Block.size);
+        this.ctx.fillRect(this.x, this.y, this.size, this.size);
         this.ctx.restore;
     }
 }
@@ -21,31 +26,37 @@ class Brick {
         this.y = y;
         /**@type {CanvasRenderingContext2D} */
         this.ctx = ctx;
+        this.size = Brick.size;
+        this.lastDir = "";
+    }
+    setLastDir(dir) {
+        this.lastDir = dir;
     }
     draw() {
         this.ctx.save;
         this.ctx.fillStyle = "blue";
-        this.ctx.fillRect(this.x, this.y, Block.size, Block.size);
+        this.ctx.fillRect(this.x, this.y, this.size, this.size);
         this.ctx.restore;
     }
 }
 
 class Ball {
-    static speed = 3;
+    static speed = 2;
     static size = 5;
-    static startingAngle = 45;
+    static startingAngle = 30;
     static randomizzation = 2;
     constructor({ startingPosition, ctx }) {
         this.pos = startingPosition;
         /**@type {CanvasRenderingContext2D} */
         this.ctx = ctx;
         this.angle = Ball.startingAngle;
+        this.size = Ball.size;
     }
     draw() {
         this.ctx.save();
         this.ctx.beginPath();
         this.ctx.fillStyle = "gray";
-        this.ctx.arc(this.pos.x, this.pos.y, Ball.size, 0, 2 * Math.PI);
+        this.ctx.arc(this.pos.x, this.pos.y, this.size, 0, 2 * Math.PI);
         this.ctx.closePath();
         this.ctx.fill();
         this.ctx.restore();
@@ -55,19 +66,33 @@ class Ball {
         this.pos.y -= Ball.speed * Math.sin((this.angle * Math.PI) / 180);
     }
     collide(where) {
-        switch (where) {
-            case "top":
-                this.angle = 360 - this.angle;
-                break;
-            case "bottom":
-                this.angle = 360 - this.angle;
-                break;
-            case "left":
-                this.angle = 360 - this.angle + 180;
-                break;
-            case "right":
-                this.angle = 360 - this.angle + 180;
-                break;
+        where = where.split(",");
+        where.forEach((d, i) => {
+            if (d == "") {
+                where.splice(i, 1);
+            }
+        });
+        where = where[0];
+        if (where.length == 2) {
+            where = "bottom";
+        }
+        {
+            switch (where) {
+                case "top":
+                case "block":
+                    this.angle = 360 - this.angle;
+                    break;
+                case "bottom":
+                    this.angle = 360 - this.angle;
+                    break;
+                case "left":
+                case "side":
+                    this.angle = 360 - this.angle + 180;
+                    break;
+                case "right":
+                    this.angle = 360 - this.angle + 180;
+                    break;
+            }
         }
         if (this.angle >= 360) {
             this.angle -= 360;
@@ -82,11 +107,16 @@ class Plate {
         this.pos = startingPosition;
         /**@type {CanvasRenderingContext2D} */
         this.ctx = ctx;
+        this.size = Plate.size;
+        this.lastDir = "";
+    }
+    setLastDir(dir) {
+        this.lastDir = dir;
     }
     draw() {
         this.ctx.save();
         this.ctx.fillStyle = "gray";
-        this.ctx.fillRect(this.pos.x, this.pos.y, Plate.size.x, Plate.size.y);
+        this.ctx.fillRect(this.pos.x, this.pos.y, this.size.x, this.size.y);
         this.ctx.restore();
     }
 }
